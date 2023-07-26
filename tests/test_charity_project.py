@@ -365,6 +365,7 @@ def test_delete_charity_project_invalid_id(superuser_client):
 def test_update_charity_project(superuser_client, charity_project, json,
                                 expected_data):
     response = superuser_client.patch('/charity_project/1', json=json)
+    print(response.json())
     assert response.status_code == 200, (
         'При обновлении проекта должен возвращаться статус-код 200.'
     )
