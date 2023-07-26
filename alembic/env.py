@@ -13,8 +13,6 @@ from app.core.base import Base
 # access to the values within the .ini file in use.
 config = context.config
 
-
-
 load_dotenv('.env')
 
 # Установим для переменной sqlalchemy.url значение из нашего .env файла.
@@ -70,7 +68,6 @@ def do_run_migrations(connection):
 
     with context.begin_transaction():
         context.run_migrations()
-
 
 
 async def run_async_migrations() -> None:
