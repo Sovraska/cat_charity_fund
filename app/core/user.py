@@ -1,3 +1,4 @@
+import logging
 from typing import Optional, Union
 
 from fastapi import Depends, Request
@@ -22,7 +23,7 @@ bearer_transport = BearerTransport(tokenUrl='auth/jwt/login')
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600)
+    return JWTStrategy(secret=settings.secret, lifetime_seconds=settings.lifetime_seconds)
 
 
 auth_backend = AuthenticationBackend(
@@ -38,7 +39,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             password: str,
             user: Union[UserCreate, User],
     ) -> None:
-        if len(password) < 3:
+        if len(password) < settings.max_password_length:
             raise InvalidPasswordException(
                 reason='Password should be at least 3 characters'
             )
@@ -50,7 +51,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_register(
             self, user: User, request: Optional[Request] = None
     ):
-        print(f'Пользователь {user.email} зарегистрирован.')
+        logging.info(f'Пользователь {user.email} зарегистрирован.')
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

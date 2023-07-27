@@ -18,8 +18,7 @@ class CRUDDonation(CRUDBase):
                 Donation.user_id == user.id
             )
         )
-        donations = donations.scalars().all()
-        return donations
+        return donations.scalars().all()
 
 
 donation_crud = CRUDDonation(Donation)

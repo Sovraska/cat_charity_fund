@@ -16,9 +16,13 @@ async def check_is_not_full_amount(model, session) -> List:
     return investments.scalars().all()
 
 
-async def transfer_invested_amount_lt(transfer_to, transfer_from, session):
+async def transfer_invested_amount_lt(
+        transfer_to, transfer_from, session
+):
     """called when investment less or equal then the newly created object"""
-    transfer_to.invested_amount += transfer_from.full_amount - transfer_from.invested_amount
+    transfer_to.invested_amount += (
+        transfer_from.full_amount - transfer_from.invested_amount
+    )
     transfer_from.invested_amount = transfer_from.full_amount
     transfer_from.fully_invested = True
     transfer_from.close_date = datetime.datetime.utcnow()
@@ -33,9 +37,13 @@ async def transfer_invested_amount_lt(transfer_to, transfer_from, session):
     return transfer_to
 
 
-async def transfer_invested_amount_gt(transfer_to, transfer_from, session):
+async def transfer_invested_amount_gt(
+        transfer_to, transfer_from, session
+):
     """called when investment grater then the newly created object"""
-    transfer_from.invested_amount += transfer_to.full_amount - transfer_to.invested_amount
+    transfer_from.invested_amount += (
+        transfer_to.full_amount - transfer_to.invested_amount
+    )
     transfer_to.invested_amount = transfer_to.full_amount
     transfer_to.fully_invested = True
     transfer_to.close_date = datetime.datetime.utcnow()
@@ -63,7 +71,9 @@ async def investment(new_object, session):
     result = []
     if not investments:
         return
-    more_to_invest = investments[0].full_amount - investments[0].invested_amount
+    more_to_invest = (
+        investments[0].full_amount - investments[0].invested_amount
+    )
     for investment_obj in investments:
         if new_object.fully_invested:
             if new_object.full_amount == new_object.invested_amount:
@@ -80,7 +90,9 @@ async def investment(new_object, session):
             )
             result.append(added_amount.invested_amount)
             await session.refresh(investment_obj)
-            more_to_invest = investment_obj.full_amount - investment_obj.invested_amount
+            more_to_invest = (
+                investment_obj.full_amount - investment_obj.invested_amount
+            )
 
         else:
             added_amount = await transfer_invested_amount_lt(
@@ -90,4 +102,6 @@ async def investment(new_object, session):
             )
             result.append(added_amount.invested_amount)
             await session.refresh(investment_obj)
-            more_to_invest = investment_obj.full_amount - investment_obj.invested_amount
+            more_to_invest = (
+                investment_obj.full_amount - investment_obj.invested_amount
+            )

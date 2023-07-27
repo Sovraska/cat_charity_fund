@@ -26,6 +26,26 @@ python -m venv venv
 ```  
 pip install -r requirements.txt  
 ```  
+
+Создать и заполнить файл конфигурации .env по предоставленному шаблону:  
+```  
+APP_TITLE=Название Приложения
+DESCRIPTION=Описание Приложения
+DATABASE_URL=sqlite+aiosqlite:///./fastapi.db
+SECRET=Ваш секретный ключ для генерации паролей
+
+FIRST_SUPERUSER_EMAIL=почта администратора
+FIRST_SUPERUSER_PASSWORD=пароль администратора
+```
+
+Создайте файлы миграций и примените их:  
+```  
+python manage.py makemigrations
+```
+```  
+python manage.py migrate
+```  
+
 Через командную строку запустите проект:  
 ```  
 uvicorn app.main:app --reload 

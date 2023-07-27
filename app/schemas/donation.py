@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, validator
 
+from app.core.config import settings
+
 
 class DonationBase(BaseModel):
     full_amount: int
@@ -16,7 +18,7 @@ class DonationCreate(DonationBase):
             raise ValueError(
                 'full_amount не число'
             )
-        if value <= 0:
+        if value <= settings.full_amount_minimum:
             raise ValueError(
                 'full_amount не может быть ниже 0'
             )

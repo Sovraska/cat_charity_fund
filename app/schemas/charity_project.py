@@ -3,6 +3,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Extra, Field, validator
 
+from app.core.config import settings
+
 
 class CharityProjectBase(BaseModel):
     name: str
@@ -11,12 +13,19 @@ class CharityProjectBase(BaseModel):
 
 
 class CharityProjectCreate(CharityProjectBase):
-    name: str = Field(..., min_length=1, max_length=100)
-    description: str = Field(..., min_length=1)
+    name: str = Field(
+        ...,
+        min_length=settings.min_length_string,
+        max_length=settings.max_length_string
+    )
+    description: str = Field(
+        ...,
+        min_length=settings.min_length_string
+    )
 
     @validator('full_amount')
     def check_full_amount(cls, value):
-        if value <= 0:
+        if value <= settings.full_amount_minimum:
             raise ValueError(
                 'full_amount не может быть ниже 0'
             )
@@ -24,13 +33,19 @@ class CharityProjectCreate(CharityProjectBase):
 
 
 class CharityProjectUpdate(BaseModel):
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
-    description: Optional[str] = Field(None, min_length=1)
+    name: Optional[str] = Field(
+        None,
+        min_length=settings.min_length_string,
+        max_length=settings.max_length_string
+    )
+    description: Optional[str] = Field(
+        None, min_length=settings.min_length_string
+    )
     full_amount: Optional[int]
 
     @validator('full_amount')
     def check_full_amount(cls, value):
-        if value <= 0:
+        if value <= settings.full_amount_minimum:
             raise ValueError(
                 'full_amount не может быть ниже 0'
             )
