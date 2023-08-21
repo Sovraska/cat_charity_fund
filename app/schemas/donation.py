@@ -12,16 +12,12 @@ class DonationBase(BaseModel):
 
 
 class DonationCreate(DonationBase):
-    @validator('full_amount')
+    @validator("full_amount")
     def check_full_amount(cls, value):
         if not isinstance(value, int):
-            raise ValueError(
-                'full_amount не число'
-            )
+            raise ValueError("full_amount не число")
         if value <= settings.full_amount_minimum:
-            raise ValueError(
-                'full_amount не может быть ниже 0'
-            )
+            raise ValueError("full_amount не может быть ниже 0")
         return value
 
 

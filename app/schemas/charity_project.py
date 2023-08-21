@@ -16,19 +16,14 @@ class CharityProjectCreate(CharityProjectBase):
     name: str = Field(
         ...,
         min_length=settings.min_length_string,
-        max_length=settings.max_length_string
+        max_length=settings.max_length_string,
     )
-    description: str = Field(
-        ...,
-        min_length=settings.min_length_string
-    )
+    description: str = Field(..., min_length=settings.min_length_string)
 
-    @validator('full_amount')
+    @validator("full_amount")
     def check_full_amount(cls, value):
         if value <= settings.full_amount_minimum:
-            raise ValueError(
-                'full_amount не может быть ниже 0'
-            )
+            raise ValueError("full_amount не может быть ниже 0")
         return value
 
 
@@ -36,19 +31,15 @@ class CharityProjectUpdate(BaseModel):
     name: Optional[str] = Field(
         None,
         min_length=settings.min_length_string,
-        max_length=settings.max_length_string
+        max_length=settings.max_length_string,
     )
-    description: Optional[str] = Field(
-        None, min_length=settings.min_length_string
-    )
+    description: Optional[str] = Field(None, min_length=settings.min_length_string)
     full_amount: Optional[int]
 
-    @validator('full_amount')
+    @validator("full_amount")
     def check_full_amount(cls, value):
         if value <= settings.full_amount_minimum:
-            raise ValueError(
-                'full_amount не может быть ниже 0'
-            )
+            raise ValueError("full_amount не может быть ниже 0")
         return value
 
     class Config:

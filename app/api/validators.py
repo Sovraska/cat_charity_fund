@@ -9,49 +9,47 @@ from app.schemas.charity_project import CharityProjectUpdate
 
 
 async def check_charity_project_name_duplicate(
-        name: str,
-        session: AsyncSession,
+    name: str,
+    session: AsyncSession,
 ) -> None:
-    charity_project = await charity_project_crud.get_charity_project_by_name(name, session)
+    charity_project = await charity_project_crud.get_charity_project_by_name(
+        name, session
+    )
     if charity_project is not None:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Проект с таким именем уже существует!',
+            detail="Проект с таким именем уже существует!",
         )
 
 
 async def check_charity_project_exists(
-        charity_project_id: int,
-        session: AsyncSession,
+    charity_project_id: int,
+    session: AsyncSession,
 ) -> CharityProject:
     charity_project = await charity_project_crud.get(charity_project_id, session)
     if charity_project is None:
         raise HTTPException(
-            status_code=HTTPStatus.NOT_FOUND,
-            detail='Проект не найден!'
+            status_code=HTTPStatus.NOT_FOUND, detail="Проект не найден!"
         )
     return charity_project
 
 
-async def check_is_invested_amount_zero(
-    charity_project: CharityProject
-) -> None:
+async def check_is_invested_amount_zero(charity_project: CharityProject) -> None:
     if charity_project.invested_amount > 0:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='В проект были внесены средства, не подлежит удалению!'
+            detail="В проект были внесены средства, не подлежит удалению!",
         )
 
 
 async def check_is_full_amount_gt_invested_amount(
-    charity_project: CharityProject,
-    obj_in: CharityProjectUpdate
+    charity_project: CharityProject, obj_in: CharityProjectUpdate
 ) -> None:
     if obj_in.full_amount:
         if obj_in.full_amount < charity_project.invested_amount:
             raise HTTPException(
                 status_code=HTTPStatus.BAD_REQUEST,
-                detail='Нельзя Установить Общую сумму ниже накопленной!'
+                detail="Нельзя Установить Общую сумму ниже накопленной!",
             )
 
 
@@ -61,5 +59,5 @@ async def check_is_closed_project(
     if charity_project.fully_invested:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail='Закрытый проект нельзя редактировать!'
+            detail="Закрытый проект нельзя редактировать!",
         )
